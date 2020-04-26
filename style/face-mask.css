@@ -1,0 +1,178 @@
+#face-mask-app {
+    background-image: url(../images/face-mask.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+}
+
+.loading{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index:300000;
+    border: white 1px;
+    color: white;
+    padding: 75px 26px;
+    font-size: 22px;
+    margin: auto;
+    width: 200px;
+    height: 200px;
+}
+
+.spinner-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    color: white;
+    z-index:300000;
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.8;
+    opacity: 0.8;   
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    background-color: blue;
+    border-radius: 50%;
+    display: inline-block;
+    z-index: 999999;
+}
+
+#arrowLeft{
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    z-index: 999999;
+    opacity: 0.7;
+    cursor: pointer;
+    margin: auto;
+}
+
+#arrowRight{
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    z-index: 999999;
+    opacity: 0.7;
+    cursor: pointer;
+    margin: auto;
+}
+
+.mask-slider{
+    width: 80%;
+    height: 125px;
+    margin: auto;
+    position: absolute;
+    bottom: 5%;
+    background-color: black;
+    opacity: 0.7;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+}
+
+.mask-list{
+    position: relative;
+    width: 85%;
+    height: 125px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.mask-slider ul{
+    list-style: none;
+    width: 10000px;
+    height: 125px;
+    padding-left: 10px;
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.mask-slider ul li {
+    width: 100px;
+    height: 100px;
+    float: left;
+    margin: 5px 15px;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+
+.mask-slider ul li img {
+    width: 85px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -43px;
+}
+
+.mask{
+    border: 0px;
+}
+
+.selected-mask{
+    border: 5px solid #0099cc;
+}
+
+.full-mask{
+    margin-left: -33px!important;
+    height: 85px!important;
+    margin-top: 25px!important;
+    width: auto!important;
+}
+
+@media screen and (max-width: 767px) {
+    .loading{
+        padding: 55px 12px;
+        font-size: large;
+    }
+    .spinner-border{
+        width: 150px;
+        height: 150px;
+    }
+    .mask-slider{
+        width: 100%;
+        bottom: 12%;
+    }
+    .mask-list {
+        width: 70%;
+    }
+    .mask-list ul {
+        padding-left: 0;
+        margin-top: 25px;
+    }
+    .mask-list ul li {
+        width: 75px;
+        height: 75px;
+        margin: 5px 8px;
+    }
+    .mask-list ul li img {
+        width: 65px;
+        margin-left: -33px;
+    }
+
+    .full-mask{
+        height: 65px!important;
+        width: auto!important;
+        margin-left: -25px!important;
+        margin-top: 35px!important;
+    }
+}
+
+
+@media screen and (min-width: 450px) and (max-width: 767px) {
+    .mask-list {
+        width: 82%;
+    }
+}
