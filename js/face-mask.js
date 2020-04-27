@@ -7,6 +7,8 @@ let isVideo = false;
 let model = null;
 let cameraFrame = null;
 let detectFace = false;
+let clearMask = false;
+let maskOnImage = false;
 let masks = [];
 let maskKeyPointIndexs = [10, 234, 152, 454]; //overhead, left Cheek, chin, right cheek
 
@@ -17,9 +19,12 @@ $("#webcam-switch").change(function () {
         webcam.start()
             .then(result =>{
                 cameraStarted();
+                $("#button-control").addClass("d-none");
+                clearCanvas();
                 resizeCanvas();
                 console.log("webcam started");
                 isVideo = true;
+                maskOnImage = false;
                 startFaceMask();
             })
             .catch(err => {
@@ -27,15 +32,18 @@ $("#webcam-switch").change(function () {
             });
     }
     else {      
-        clearCanvas();  
         canvasElement.style.transform ="";
         cameraStopped();
         webcam.stop();
         if(cameraFrame!= null){
+            clearMask = true;
             detectFace = false;
             cancelAnimationFrame(cameraFrame);
         }
         console.log("webcam stopped");
+        $("#button-control").removeClass("d-none");
+        $("#canvas").css({width: imageElement.clientWidth, height: imageElement.clientHeight});
+        isVideo = false;
     }        
 });
 
@@ -60,7 +68,7 @@ $(".mask-list ul li").click(function () {
     $(this).addClass("selected-mask");
     selectedMask = $(".selected-mask img");
     clearCanvas();
-    if(model !=null && isVideo == false){
+    if(model !=null && isVideo == false && maskOnImage){
         detectFaces();
     }
 });
@@ -68,6 +76,7 @@ $(".mask-list ul li").click(function () {
 $("#mask-btn").click(function () {
     $("#canvas").css({width: imageElement.clientWidth, height: imageElement.clientHeight});
     startFaceMask();
+    maskOnImage = true;
 });
 
 function startFaceMask() {
@@ -92,6 +101,10 @@ function detectFaces() {
     model.estimateFaces(isVideo? webcamElement : imageElement).then(predictions => {
         console.log(predictions);
         drawMask(predictions);
+        if(clearMask){
+            clearCanvas();
+            clearMask = false;
+        }
         if(detectFace){
             cameraFrame = requestAnimFrame(detectFaces);
         }

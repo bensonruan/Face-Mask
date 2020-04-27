@@ -24,6 +24,21 @@
                 <span id="webcam-caption">Click to Start Camera</span>
                 </label>      
         </div>
+
+        <div class="form-control" id="button-control">
+            <button id="mask-btn" class="btn btn-primary">Put Mask On!</button>
+        </div>
+        <div class="face-container">
+            <img id="faces" src="images/Donal_Thrump.jpg">
+        </div>
+        <div id="canvas" width="640" height="480"></div>
+        <div class="loading d-none">
+            Loading Model
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+
         
         <div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
             Fail to start camera, please allow permision to access camera. <br/>
@@ -34,13 +49,6 @@
             <div id="app-panel" class="app-panel md-content row p-0 m-0">     
                 <div id="webcam-container" class="webcam-container col-12 d-none p-0 m-0">
                     <video id="webcam" autoplay playsinline width="640" height="480"></video>
-                    <div id="canvas" width="640" height="480"></div>
-                    <div class="loading d-none">
-                        Loading Model
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                    </div>
                 </div>
             </div>        
         </div>
