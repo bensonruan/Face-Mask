@@ -8,6 +8,41 @@
     height: 100vh;
 }
 
+.face-container{
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    background-color: black;
+}
+.face-container img{
+    width: auto;
+    height: 100%;
+}
+
+#button-control{
+    position: absolute;
+    top: 30%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    margin: auto;
+    background: transparent;
+    border: 0;
+    width: 320px;
+    z-index: 99999;
+}
+
+#mask-btn{
+    font-size: 30px;
+    padding: 10px 50px;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
 .loading{
     position: absolute;
     top: 0;
@@ -132,7 +167,7 @@
     width: auto!important;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1024px) {
     .loading{
         padding: 55px 12px;
         font-size: large;
@@ -172,7 +207,18 @@
 
 
 @media screen and (min-width: 450px) and (max-width: 767px) {
+    #button-control {
+        top: 10%;
+        bottom: auto;
+        left: auto;
+        right: 0;
+    }
+
     .mask-list {
         width: 82%;
     }
+}
+
+@media screen and (max-width: 450px)  {
+
 }

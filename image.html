@@ -16,35 +16,21 @@
     <script type="text/javascript" src="js/webcam-ui-lib.js"></script>
 </head>
 <body>
-    <main id="face-mask-app">
-        <div class="form-control webcam-start" id="webcam-control">
-                <label class="form-switch">
-                <input type="checkbox" id="webcam-switch">
-                <i></i> 
-                <span id="webcam-caption">Click to Start Camera</span>
-                </label>      
+    <main>
+        <div class="form-control" id="button-control">
+                <button id="mask-btn" class="btn btn-primary">Put Mask On!</button>
         </div>
-        
-        <div id="errorMsg" class="col-12 col-md-6 alert-danger d-none">
-            Fail to start camera, please allow permision to access camera. <br/>
-            If you are browsing through social media built in browsers, you would need to open the page in Sarafi (iPhone)/ Chrome (Android)
-            <button id="closeError" class="btn btn-primary ml-3">OK</button>
-        </div>
-        <div class="md-modal md-effect-12">
-            <div id="app-panel" class="app-panel md-content row p-0 m-0">     
-                <div id="webcam-container" class="webcam-container col-12 d-none p-0 m-0">
-                    <video id="webcam" autoplay playsinline width="640" height="480"></video>
-                    <div id="canvas" width="640" height="480"></div>
-                    <div class="loading d-none">
-                        Loading Model
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only"></span>
-                        </div>
-                    </div>
+        <div class="face-container">
+            <img id="faces" src="images/Donal_Thrump.jpg">
+            <div id="canvas" width="640" height="480"></div>
+            <video id="webcam" autoplay playsinline width="640" height="480" class="d-none"></video>
+            <div class="loading d-none">
+                Loading Model
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
                 </div>
-            </div>        
+            </div>
         </div>
-        <div class="md-overlay"></div>
 
         <div class="mask-slider">
             <img id="arrowLeft" src="images/arrow-left.png">

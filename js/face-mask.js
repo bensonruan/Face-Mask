@@ -1,7 +1,9 @@
 const webcamElement = document.getElementById('webcam');
 const canvasElement = document.getElementById('canvas');
+const imageElement = document.getElementById('faces');
 const webcam = new Webcam(webcamElement, 'user');
 let selectedMask = $(".selected-mask img");
+let isVideo = false;
 let model = null;
 let cameraFrame = null;
 let detectFace = false;
@@ -17,6 +19,7 @@ $("#webcam-switch").change(function () {
                 cameraStarted();
                 resizeCanvas();
                 console.log("webcam started");
+                isVideo = true;
                 startFaceMask();
             })
             .catch(err => {
@@ -57,6 +60,14 @@ $(".mask-list ul li").click(function () {
     $(this).addClass("selected-mask");
     selectedMask = $(".selected-mask img");
     clearCanvas();
+    if(model !=null && isVideo == false){
+        detectFaces();
+    }
+});
+
+$("#mask-btn").click(function () {
+    $("#canvas").css({width: imageElement.clientWidth, height: imageElement.clientHeight});
+    startFaceMask();
 });
 
 function startFaceMask() {
@@ -65,10 +76,11 @@ function startFaceMask() {
         model = mdl;
         $(".loading").addClass('d-none');
         console.log("model loaded");
-        if(webcam.facingMode == 'user'){
+        if(isVideo && webcam.facingMode == 'user'){
             canvasElement.style.transform = "scale(-1,1)";
+            detectFace = true;
         }
-        detectFace = true;
+        
         cameraFrame = detectFaces();
     })
     .catch(err => {
@@ -77,7 +89,8 @@ function startFaceMask() {
 }
 
 function detectFaces() {
-    model.estimateFaces(webcamElement).then(predictions => {
+    model.estimateFaces(isVideo? webcamElement : imageElement).then(predictions => {
+        console.log(predictions);
         drawMask(predictions);
         if(detectFace){
             cameraFrame = requestAnimFrame(detectFaces);
@@ -136,27 +149,31 @@ function drawMask(predictions){
             maskSizeAdjustmentTop = parseFloat(selectedMask.attr("data-top-adj"));
             maskSizeAdjustmentLeft = parseFloat(selectedMask.attr("data-left-adj"));
             maskElement.css({
-                            top: maskCoordinate.top - ((maskHeight * (maskSizeAdjustmentHeight-1))/2) - (maskHeight * maskSizeAdjustmentTop), 
-                            left: maskCoordinate.left - ((maskWidth * (maskSizeAdjustmentWidth-1))/2) + (maskWidth * maskSizeAdjustmentLeft), 
-                            width: maskWidth * maskSizeAdjustmentWidth,
-                            height: maskHeight * maskSizeAdjustmentHeight,
-                            position:'absolute'
-                        });
-            
+                top: maskCoordinate.top - ((maskHeight * (maskSizeAdjustmentHeight-1))/2) - (maskHeight * maskSizeAdjustmentTop), 
+                left: maskCoordinate.left - ((maskWidth * (maskSizeAdjustmentWidth-1))/2) + (maskWidth * maskSizeAdjustmentLeft), 
+                width: maskWidth * maskSizeAdjustmentWidth,
+                height: maskHeight * maskSizeAdjustmentHeight,
+                position:'absolute'
+            });    
         }
     }
 }
 
 function getCoordinate(x,y){
-    var ratio = canvasElement.clientHeight/webcamElement.height;
-    if(webcam.webcamList.length ==1 || window.innerWidth/window.innerHeight >= webcamElement.width/webcamElement.height){
-        var leftAdjustment = 0;
-    }else{
-        var leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth)/2 
+    if(isVideo){
+        var ratio = canvasElement.clientHeight/webcamElement.height;
+        if(webcam.webcamList.length ==1 || window.innerWidth/window.innerHeight >= webcamElement.width/webcamElement.height){
+            var leftAdjustment = 0;
+        }else{
+            var leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth)/2 
+        }
+        var resizeX = x*ratio  - leftAdjustment;
+        var resizeY = y*ratio;
+        return [resizeX, resizeY];
     }
-    var resizeX = x*ratio  - leftAdjustment;
-    var resizeY = y*ratio;
-    return [resizeX, resizeY];
+    else{
+        return [x, y];
+    }
 }
 
 function clearCanvas(){
