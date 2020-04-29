@@ -3,32 +3,31 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-color: black;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
 }
 
-.face-container{
-    position: absolute;
-    top: 0;
-    left: 0;
+#image-container{
+    position: relative;
+    margin-top: -55px;
     width: 100%;
     height: 100%;
     overflow: hidden;
     text-align: center;
     background-color: black;
 }
-.face-container img{
+#faces{
     width: auto;
     height: 100%;
+    max-width: none;
 }
 
 #button-control{
-    position: absolute;
-    top: 30%;
-    bottom: 0;
+    position: relative;
+    bottom: 200px;
     left: 0;
     right: 0;
-    height: 55px;
+    height: 65px;
     margin: auto;
     background: transparent;
     border: 0;
@@ -37,7 +36,7 @@
 }
 
 #mask-btn{
-    font-size: 22px;
+    font-size: 30px;
     padding: 10px 30px;
     font-weight: 400;
     opacity: 0.8;
@@ -49,6 +48,10 @@
 
 .form-control.webcam-start{
     top: 10%!important;
+}
+
+.form-control.webcam-on{
+    top: 15%!important;
 }
 
 #canvas{
@@ -115,12 +118,12 @@
     margin: auto;
 }
 
-.mask-slider{
-    width: 80%;
+#mask-slider{
+    width: 100%;
     height: 125px;
     margin: auto;
-    position: absolute;
-    bottom: 5%;
+    position: relative;
+    bottom: 190px;
     background-color: black;
     opacity: 0.7;
     left: 0;
@@ -128,7 +131,7 @@
     z-index: 9999;
 }
 
-.mask-list{
+#mask-list{
     position: relative;
     width: 85%;
     height: 125px;
@@ -136,7 +139,7 @@
     overflow: hidden;
 }
 
-.mask-slider ul{
+#mask-slider ul{
     list-style: none;
     width: 10000px;
     height: 125px;
@@ -145,7 +148,7 @@
     margin-top: 10px;
 }
 
-.mask-slider ul li {
+#mask-slider ul li {
     width: 100px;
     height: 100px;
     float: left;
@@ -155,13 +158,9 @@
     cursor: pointer;
 }
 
-.mask-slider ul li img {
+#mask-slider ul li img {
     width: 85px;
     margin: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin-left: -43px;
 }
 
 .mask{
@@ -173,64 +172,102 @@
 }
 
 .full-mask{
-    margin-left: -33px!important;
     height: 85px!important;
-    margin-top: 25px!important;
     width: auto!important;
 }
 
 @media screen and (max-width: 1024px) {
     .loading{
-        padding: 55px 12px;
-        font-size: large;
+        padding: 55px 0px;
+        font-size: medium;
+        width: 150px;
     }
     .spinner-border{
         width: 150px;
         height: 150px;
     }
-    .mask-slider{
+    #mask-slider{
         width: 100%;
-        bottom: 12%;
     }
-    .mask-list {
-        width: 70%;
+    #mask-list {
+        width: 80%;
     }
-    .mask-list ul {
+    #mask-list ul {
         padding-left: 0;
         margin-top: 25px;
     }
-    .mask-list ul li {
+    #mask-list ul li {
         width: 75px;
         height: 75px;
         margin: 5px 8px;
     }
-    .mask-list ul li img {
+    #mask-list ul li img {
         width: 65px;
-        margin-left: -33px;
     }
 
     .full-mask{
         height: 65px!important;
         width: auto!important;
-        margin-left: -25px!important;
-        margin-top: 35px!important;
+        margin-left: 3px!important;
+    }
+
+    #mask-btn{
+        font-size: 28px;
     }
 }
 
+@media screen and (max-width: 767px) {
+    #face-mask-app{
+        height: 100vh;
+    }
+    #arrowLeft{
+        height: 43px;
+    }
+    #arrowRight{
+        height: 43px;
+    }
+}
 
 @media screen and (min-width: 450px) and (max-width: 767px) {
-    #button-control {
-        top: 35%;
-        bottom: auto;
-        left: auto;
-        right: 0;
+    .form-control.webcam-start{
+        top: 0!important;
     }
 
-    .mask-list {
-        width: 82%;
+    #mask-list {
+        width: 86%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .form-control.webcam-start{
+        top: 5%!important;
+    }
+    .form-control.webcam-on{
+        top: 15%!important;
+    }
+    #button-control{
+        bottom: 350px;
+    }
+    #mask-slider{
+        bottom: 320px;
     }
 }
 
 .md-modal {
     margin: 0!important;
+}
+
+
+#webcam-container #mask-slider{
+    position: fixed;
+    bottom: 10px;
+    width: 91.2%;
+    margin: 0 0 0 auto;
+}
+
+@media screen and (max-width: 892px) {
+    #webcam-container #mask-slider{
+        bottom: 70px;
+        width: 100%;
+    }
 }

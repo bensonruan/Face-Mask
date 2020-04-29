@@ -18,12 +18,10 @@ $("#webcam-switch").change(function () {
         $('.md-modal').addClass('md-show');
         webcam.start()
             .then(result =>{
-                cameraStarted();
-                $("#button-control").addClass("d-none");
-                clearCanvas();
-                resizeCanvas();
-                console.log("webcam started");
                 isVideo = true;
+                cameraStarted();
+                switchSource();               
+                console.log("webcam started");                
                 maskOnImage = false;
                 startFaceMask();
             })
@@ -32,38 +30,36 @@ $("#webcam-switch").change(function () {
             });
     }
     else {      
-        canvasElement.style.transform ="";
-        cameraStopped();
         webcam.stop();
         if(cameraFrame!= null){
             clearMask = true;
             detectFace = false;
             cancelAnimationFrame(cameraFrame);
         }
-        console.log("webcam stopped");
-        $("#button-control").removeClass("d-none");
-        $("#canvas").css({width: imageElement.clientWidth, height: imageElement.clientHeight});
         isVideo = false;
+        switchSource();
+        cameraStopped(true);
+        console.log("webcam stopped");
     }        
 });
 
 $("#arrowLeft").click(function () {
-    let itemWidth = parseInt($(".mask-list ul li").css("width")) 
-                    + parseInt($(".mask-list ul li").css("margin-left")) 
-                    + parseInt($(".mask-list ul li").css("margin-right"));
-    let marginLeft = parseInt($(".mask-list ul").css("margin-left"));
-    $(".mask-list ul").css({"margin-left": (marginLeft+itemWidth) +"px", "transition": "0.3s"});
+    let itemWidth = parseInt($("#mask-list ul li").css("width")) 
+                    + parseInt($("#mask-list ul li").css("margin-left")) 
+                    + parseInt($("#mask-list ul li").css("margin-right"));
+    let marginLeft = parseInt($("#mask-list ul").css("margin-left"));
+    $("#mask-list ul").css({"margin-left": (marginLeft+itemWidth) +"px", "transition": "0.3s"});
 });
 
 $("#arrowRight").click(function () {
-    let itemWidth = parseInt($(".mask-list ul li").css("width")) 
-    + parseInt($(".mask-list ul li").css("margin-left")) 
-    + parseInt($(".mask-list ul li").css("margin-right"));
-    let marginLeft = parseInt($(".mask-list ul").css("margin-left"));
-    $(".mask-list ul").css({"margin-left": (marginLeft-itemWidth) +"px", "transition": "0.3s"});
+    let itemWidth = parseInt($("#mask-list ul li").css("width")) 
+    + parseInt($("#mask-list ul li").css("margin-left")) 
+    + parseInt($("#mask-list ul li").css("margin-right"));
+    let marginLeft = parseInt($("#mask-list ul").css("margin-left"));
+    $("#mask-list ul").css({"margin-left": (marginLeft-itemWidth) +"px", "transition": "0.3s"});
 });
 
-$(".mask-list ul li").click(function () {
+$("#mask-list ul li").click(function () {
     $(".selected-mask").removeClass("selected-mask");
     $(this).addClass("selected-mask");
     selectedMask = $(".selected-mask img");
@@ -75,31 +71,43 @@ $(".mask-list ul li").click(function () {
 
 $("#mask-btn").click(function () {
     $("#canvas").css({width: imageElement.clientWidth, height: imageElement.clientHeight});
-    startFaceMask();
-    maskOnImage = true;
+    startFaceMask()
+        .then(res => {
+            maskOnImage = true;
+            detectFaces();
+        });
 });
 
-function startFaceMask() {
-    $(".loading").removeClass('d-none');
-    facemesh.load().then(mdl => { 
-        model = mdl;
-        $(".loading").addClass('d-none');
-        console.log("model loaded");
-        if(isVideo && webcam.facingMode == 'user'){
-            canvasElement.style.transform = "scale(-1,1)";
-            detectFace = true;
-        }
-        
-        cameraFrame = detectFaces();
-    })
-    .catch(err => {
-        displayError('Fail to load face mesh model<br/>Please refresh the page to try again');
+$('#closeError').click(function() {
+    $("#webcam-switch").prop('checked', false).change();
+});
+
+async function startFaceMask() {
+    return new Promise((resolve, reject) => {
+        $(".loading").removeClass('d-none');
+        facemesh.load().then(mdl => { 
+            model = mdl;
+            $(".loading").addClass('d-none');
+            console.log("model loaded");
+            if(isVideo && webcam.facingMode == 'user'){
+                detectFace = true;
+            }
+            
+            cameraFrame =  detectFaces();
+            resolve();
+        })
+        .catch(err => {
+            displayError('Fail to load face mesh model<br/>Please refresh the page to try again');
+            reject(error);
+        });
     });
 }
 
-function detectFaces() {
-    model.estimateFaces(isVideo? webcamElement : imageElement).then(predictions => {
-        console.log(predictions);
+async function detectFaces() {
+    let inputElement = isVideo? webcamElement : imageElement;
+    let flipHorizontal = isVideo;
+    await model.estimateFaces(inputElement, false, flipHorizontal).then(predictions => {
+        //console.log(predictions);
         drawMask(predictions);
         if(clearMask){
             clearCanvas();
@@ -115,6 +123,16 @@ function drawMask(predictions){
     if(masks.length != predictions.length){
         clearCanvas();
     }   
+    overheadIndex = 0;
+    chinIndex = 2;
+    if(isVideo){
+        leftCheekIndex = 3;
+        rightCheekIndex = 1;
+    }
+    else{
+        leftCheekIndex = 1;
+        rightCheekIndex = 3;
+    }
     if (predictions.length > 0) {
         for (let x = 0; x < predictions.length; x++) {
             const keypoints = predictions[x].scaledMesh;  //468 key points of face;
@@ -138,32 +156,39 @@ function drawMask(predictions){
                     dot = dots[i];
                 }
                 else{
-                    dot = {top:0, left:0};
+                    dotElement = $("<div class='dot'></div>");
+                    //dotElement.appendTo($("#canvas"));
+                    dot = {top:0, left:0, element: dotElement};
                     dots.push(dot);
                 }
                 dot.left = coordinate[0];
                 dot.top = coordinate[1];
+                dot.element.css({top:dot.top, left:dot.left, position:'absolute'});
             }
             maskType = selectedMask.attr("data-mask-type");
             switch(maskType) {
                 case 'full':
-                    maskCoordinate= {top: dots[0].top, left: dots[1].left};
-                    maskHeight = (dots[2].top - dots[0].top) ;
+                    maskCoordinate= {top: dots[overheadIndex].top, left: dots[leftCheekIndex].left};
+                    maskHeight = (dots[chinIndex].top - dots[overheadIndex].top) ;
                     break;
                 case 'half':
                 default:
-                    maskCoordinate = dots[1];
-                    maskHeight = (dots[2].top - dots[1].top) ;
+                    maskCoordinate = dots[leftCheekIndex];
+                    maskHeight = (dots[chinIndex].top - dots[leftCheekIndex].top) ;
                     break;
             }
-            maskWidth = (dots[3].left - dots[1].left) ;
+            maskWidth = (dots[rightCheekIndex].left - dots[leftCheekIndex].left) ;
             maskSizeAdjustmentWidth = parseFloat(selectedMask.attr("data-scale-width"));
             maskSizeAdjustmentHeight = parseFloat(selectedMask.attr("data-scale-height"));
             maskSizeAdjustmentTop = parseFloat(selectedMask.attr("data-top-adj"));
             maskSizeAdjustmentLeft = parseFloat(selectedMask.attr("data-left-adj"));
+            
+            maskTop = maskCoordinate.top - ((maskHeight * (maskSizeAdjustmentHeight-1))/2) - (maskHeight * maskSizeAdjustmentTop);
+            maskLeft = maskCoordinate.left - ((maskWidth * (maskSizeAdjustmentWidth-1))/2) + (maskWidth * maskSizeAdjustmentLeft);
+            
             maskElement.css({
-                top: maskCoordinate.top - ((maskHeight * (maskSizeAdjustmentHeight-1))/2) - (maskHeight * maskSizeAdjustmentTop), 
-                left: maskCoordinate.left - ((maskWidth * (maskSizeAdjustmentWidth-1))/2) + (maskWidth * maskSizeAdjustmentLeft), 
+                top: maskTop, 
+                left: maskLeft, 
                 width: maskWidth * maskSizeAdjustmentWidth,
                 height: maskHeight * maskSizeAdjustmentHeight,
                 position:'absolute'
@@ -174,14 +199,23 @@ function drawMask(predictions){
 
 function getCoordinate(x,y){
     if(isVideo){
-        var ratio = canvasElement.clientHeight/webcamElement.height;
         if(webcam.webcamList.length ==1 || window.innerWidth/window.innerHeight >= webcamElement.width/webcamElement.height){
-            var leftAdjustment = 0;
-        }else{
-            var leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth)/2 
+            ratio = canvasElement.clientHeight/webcamElement.height;
+            resizeX = x*ratio;
+            resizeY = y*ratio;
         }
-        var resizeX = x*ratio  - leftAdjustment;
-        var resizeY = y*ratio;
+        else if(window.innerWidth>=1024){
+            ratio = 2;
+            leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth) * 0.38
+            resizeX = x*ratio - leftAdjustment;
+            resizeY = y*ratio;
+        }
+        else{
+            leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth) * 0.35
+            resizeX = x - leftAdjustment;
+            resizeY = y;
+        }
+
         return [resizeX, resizeY];
     }
     else{
@@ -194,7 +228,23 @@ function clearCanvas(){
     masks = [];
 }
 
+function switchSource(){
+    if(isVideo){
+        containerElement = $("#webcam-container");
+        $("#button-control").addClass("d-none");
+        resizeCanvas();
+    }else{
+        canvasElement.style.transform ="";
+        containerElement = $("#image-container");
+        $("#button-control").removeClass("d-none");
+        $("#canvas").css({width: imageElement.clientWidth, height: imageElement.clientHeight});
+    }
+    $("#canvas").appendTo(containerElement);
+    $(".loading").appendTo(containerElement);
+    $("#mask-slider").appendTo(containerElement);
+    clearCanvas();
+}
+
 $(window).resize(function() {
     resizeCanvas();
-    clearCanvas();
 });

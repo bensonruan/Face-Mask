@@ -34,8 +34,8 @@ function cameraStopped(doScroll = false){
 function resizeCanvas(){
     if(webcamElement != null &&  webcamElement.scrollHeight>0){
         var ratioWebCamWidth = webcamElement.scrollHeight * (webcamElement.width/webcamElement.height);
-        var webCamFullWidth = webcamElement.scrollWidth;
-        $("#canvas").css({width: ((ratioWebCamWidth < webCamFullWidth) ? ratioWebCamWidth : webCamFullWidth)});
+        var canvasWidth = (ratioWebCamWidth < window.innerWidth) ? ratioWebCamWidth : window.innerWidth;
+        $("#canvas").css({width: canvasWidth, height: webcamElement.scrollHeight});
     }
 }
 
