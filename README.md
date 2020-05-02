@@ -30,8 +30,8 @@ The facemesh detected keypoints that used for overlay the mask:
 ## Put Mask On
 * Click on 'Put Mask On' button to detect face on image and cover by mask
 * Turn on the Webcam switch and allowing the browser to access your webcam 
-* Wait for a few seconds to Load Model for hand tracking
-* Choose the face mask you lik to try on, watch yourself cover up 
+* Wait for a few seconds to Load Model for face landmark detection
+* Choose the face mask you would like to try on, watch yourself cover up 
 
 ![facemesh-mask-demo](https://bensonruan.com/wp-content/uploads/2020/05/facemesh_mask_webcam_demo_short.gif)
 
