@@ -85,7 +85,7 @@ $('#closeError').click(function() {
 async function startFaceMask() {
     return new Promise((resolve, reject) => {
         $(".loading").removeClass('d-none');
-        facemesh.load().then(mdl => { 
+        faceLandmarksDetection.load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh).then(mdl => { 
             model = mdl;
             $(".loading").addClass('d-none');
             console.log("model loaded");
@@ -106,7 +106,13 @@ async function startFaceMask() {
 async function detectFaces() {
     let inputElement = isVideo? webcamElement : imageElement;
     let flipHorizontal = isVideo;
-    await model.estimateFaces(inputElement, false, flipHorizontal).then(predictions => {
+    await model.estimateFaces
+        ({
+            input: inputElement,
+            returnTensors: false,
+            flipHorizontal: flipHorizontal,
+            predictIrises: false
+        }).then(predictions => {
         //console.log(predictions);
         drawMask(predictions);
         if(clearMask){
