@@ -25,7 +25,7 @@ The facemesh detected keypoints that used for overlay the mask:
 * Chin : 152
 * Right Cheek : 454
 
-![face-landmarks](https://bensonruan.com/wp-content/uploads/2020/05/mesh_map_key_points.jpg)
+![face-landmarks](https://bensonruan.com/wp-content/webp-express/webp-images/uploads/2020/05/mesh_map_key_points-1024x931.jpg.webp)
 
 ## Put Mask On
 * Click on 'Put Mask On' button to detect face on image and cover by mask
@@ -33,7 +33,7 @@ The facemesh detected keypoints that used for overlay the mask:
 * Wait for a few seconds to Load Model for face landmark detection
 * Choose the face mask you would like to try on, watch yourself cover up 
 
-![facemesh-mask-demo](https://bensonruan.com/wp-content/uploads/2020/05/facemesh_mask_webcam_demo_short.gif)
+![facemesh-mask-demo](https://bensonruan.com/wp-content/webp-express/webp-images/uploads/2020/05/facemesh_mask_webcam_demo.webp)
 
 ## Notes
 * Please note that on iOS Safari, cameras can only be accessed via the https protocol 
