@@ -97,7 +97,7 @@ async function startFaceMask() {
                     resolve();
                 }); 
             })
-            .catch(err => {
+            .catch(error => {
                 displayError('Fail to load face mesh model<br/>Please refresh the page to try again');
                 reject(error);
             });
