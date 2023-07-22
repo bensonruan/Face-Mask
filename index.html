@@ -6,14 +6,15 @@
     <title>Face Mask</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel='stylesheet' type='text/css' media='screen' href='https://unpkg.com/webcam-easy/demo/style/webcam-demo.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='https://cdn.jsdelivr.net/npm/webcam-easy@1.0.5/demo/style/webcam-demo.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='style/face-mask.css'>
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>  
     <script src="https://unpkg.com/@tensorflow/tfjs-core@2.4.0/dist/tf-core.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-converter@2.4.0/dist/tf-converter.js"></script>
     <script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl@2.4.0/dist/tf-backend-webgl.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-backend-cpu@2.4.0/dist/tf-backend-cpu.min.js"></script>
     <script src="https://unpkg.com/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/webcam-easy@1.1.0/dist/webcam-easy.min.js"></script>
     <script type="text/javascript" src="js/webcam-ui-lib.js"></script>
 </head>
 <body>
@@ -27,7 +28,7 @@
         </div>
         <div id="image-container">
             <img id="faces" src="images/Donal_Thrump_White_House.jpg">
-            <div id="canvas" width="640" height="480"></div>
+            <div id="canvas"></div>
             <div class="loading d-none">
                 Loading Model
                 <div class="spinner-border" role="status">
@@ -43,7 +44,7 @@
                 <img id="arrowLeft" src="images/arrow-left.png">
                 <div id="mask-list">
                     <ul>
-                        <li class="selected-mask"><img src="images/half-mask-0.png" data-mask-type="half" data-scale-width="1.2" data-scale-height="1.2" data-scale-height="1.2" data-top-adj="0.05" data-left-adj="0"></li>
+                        <li class="selected-mask"><img src="images/half-mask-0.png" data-mask-type="half" data-scale-width="1.2" data-scale-height="1.2" data-scale-height="1.2" data-top-adj="0.05" data-left-adj="0.02"></li>
                         <li><img src="images/half-mask-1.png" data-mask-type="half" data-scale-width="1.2" data-scale-height="1.2" data-scale="1.2" data-top-adj="0.1" data-left-adj="0"></li>
                         <li><img src="images/half-mask-2.png" data-mask-type="half" data-scale-width="1.1" data-scale-height="1.1" data-top-adj="0.15" data-left-adj="0"></li>
                         <li><img src="images/half-mask-3.png" data-mask-type="half" data-scale-width="1.2" data-scale-height="1.2" data-top-adj="0.1" data-left-adj="0"></li>
@@ -68,7 +69,7 @@
         <div class="md-modal md-effect-12">
             <div id="app-panel" class="app-panel md-content row p-0 m-0">     
                 <div id="webcam-container" class="webcam-container col-12 d-none p-0 m-0">
-                    <video id="webcam" autoplay playsinline width="640" height="480"></video>
+                    <video id="webcam" autoplay playsinline></video>
                 </div>
             </div>        
         </div>

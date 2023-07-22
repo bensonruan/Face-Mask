@@ -31,11 +31,9 @@ function cameraStopped(doScroll = false){
     }, 1000);    }
 }
 
-function resizeCanvas(){
+function resizeCanvas(canvasID ="canvas"){
     if(webcamElement != null &&  webcamElement.scrollHeight>0){
-        var ratioWebCamWidth = webcamElement.scrollHeight * (webcamElement.width/webcamElement.height);
-        var canvasWidth = (ratioWebCamWidth < window.innerWidth) ? ratioWebCamWidth : window.innerWidth;
-        $("#canvas").css({width: canvasWidth, height: webcamElement.scrollHeight});
+        $("#"+canvasID).css({width: webcamElement.scrollWidth, height: webcamElement.scrollHeight});
     }
 }
 

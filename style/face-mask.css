@@ -245,11 +245,11 @@
     .form-control.webcam-on{
         top: 15%!important;
     }
-    #button-control{
-        bottom: 350px;
-    }
     #mask-slider{
         bottom: 320px;
+    }
+    #webcam-container #mask-slider{
+        bottom: 70px;
     }
 }
 
@@ -260,14 +260,18 @@
 
 #webcam-container #mask-slider{
     position: fixed;
-    bottom: 10px;
-    width: 91.2%;
+    width: 100%;
     margin: 0 0 0 auto;
 }
 
-@media screen and (max-width: 892px) {
+@media screen and (min-width: 451px) and (max-width: 892px) {
     #webcam-container #mask-slider{
-        bottom: 70px;
-        width: 100%;
+        bottom: 30px;
+    }
+}
+
+@media screen and (min-width: 892px) {
+    #webcam-container #mask-slider{
+        bottom: 0px;
     }
 }

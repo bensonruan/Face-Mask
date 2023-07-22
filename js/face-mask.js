@@ -85,23 +85,42 @@ $('#closeError').click(function() {
 async function startFaceMask() {
     return new Promise((resolve, reject) => {
         $(".loading").removeClass('d-none');
-        faceLandmarksDetection.load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh).then(mdl => { 
-            model = mdl;
-            $(".loading").addClass('d-none');
-            console.log("model loaded");
-            if(isVideo && webcam.facingMode == 'user'){
-                detectFace = true;
-            }
-            
-            cameraFrame =  detectFaces();
-            resolve();
-        })
-        .catch(err => {
-            displayError('Fail to load face mesh model<br/>Please refresh the page to try again');
-            reject(error);
-        });
+        if(model == null){
+            faceLandmarksDetection.load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh).then(mdl => { 
+                model = mdl;           
+                console.log("model loaded");
+                if(isVideo && webcam.facingMode == 'user'){
+                    detectFace = true;
+                }
+                cameraFrame =  detectFaces().then(() => {
+                    $(".loading").addClass('d-none');
+                    resolve();
+                }); 
+            })
+            .catch(err => {
+                displayError('Fail to load face mesh model<br/>Please refresh the page to try again');
+                reject(error);
+            });
+        }else if(!isVideo){
+            cameraFrame =  detectFaces().then(() => {
+                $(".loading").addClass('d-none');
+                resolve();
+            });
+        }
     });
 }
+
+$("#webcam").bind("loadedmetadata", function () {
+    if(isVideo && webcam.facingMode == 'user'){
+        detectFace = true;
+        resizeCanvas();
+    }
+    if(model != null){
+        cameraFrame =  detectFaces().then(() => {
+            $(".loading").addClass('d-none');
+        }); 
+    }
+});
 
 async function detectFaces() {
     let inputElement = isVideo? webcamElement : imageElement;
@@ -114,7 +133,10 @@ async function detectFaces() {
             predictIrises: false
         }).then(predictions => {
         //console.log(predictions);
-        drawMask(predictions);
+        let confident_predictions = $.grep(predictions, function(p) {
+            return p.faceInViewConfidence > 0.5;
+        });
+        drawMask(confident_predictions);
         if(clearMask){
             clearCanvas();
             clearMask = false;
@@ -187,10 +209,16 @@ function drawMask(predictions){
             maskSizeAdjustmentWidth = parseFloat(selectedMask.attr("data-scale-width"));
             maskSizeAdjustmentHeight = parseFloat(selectedMask.attr("data-scale-height"));
             maskSizeAdjustmentTop = parseFloat(selectedMask.attr("data-top-adj"));
-            maskSizeAdjustmentLeft = parseFloat(selectedMask.attr("data-left-adj"));
+            if(isVideo){
+                maskSizeAdjustmentLeft = parseFloat(selectedMask.attr("data-left-adj"));
+            }
+            else{
+                maskSizeAdjustmentLeft = 0;
+            }
+            
             
             maskTop = maskCoordinate.top - ((maskHeight * (maskSizeAdjustmentHeight-1))/2) - (maskHeight * maskSizeAdjustmentTop);
-            maskLeft = maskCoordinate.left - ((maskWidth * (maskSizeAdjustmentWidth-1))/2) + (maskWidth * maskSizeAdjustmentLeft);
+            maskLeft = maskCoordinate.left - ((maskWidth * (maskSizeAdjustmentWidth-1))/2) - (maskWidth * maskSizeAdjustmentLeft);
             
             maskElement.css({
                 top: maskTop, 
@@ -205,23 +233,15 @@ function drawMask(predictions){
 
 function getCoordinate(x,y){
     if(isVideo){
-        if(webcam.webcamList.length ==1 || window.innerWidth/window.innerHeight >= webcamElement.width/webcamElement.height){
+        if(window.innerWidth/window.innerHeight >= webcamElement.width/webcamElement.height){
             ratio = canvasElement.clientHeight/webcamElement.height;
             resizeX = x*ratio;
             resizeY = y*ratio;
-        }
-        else if(window.innerWidth>=1024){
-            ratio = 2;
-            leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth) * 0.38
-            resizeX = x*ratio - leftAdjustment;
-            resizeY = y*ratio;
-        }
-        else{
-            leftAdjustment = ((webcamElement.width/webcamElement.height) * canvasElement.clientHeight - window.innerWidth) * 0.35
+        }else{
+            leftAdjustment = webcamElement.width - canvasElement.clientWidth;
             resizeX = x - leftAdjustment;
             resizeY = y;
         }
-
         return [resizeX, resizeY];
     }
     else{
@@ -238,7 +258,6 @@ function switchSource(){
     if(isVideo){
         containerElement = $("#webcam-container");
         $("#button-control").addClass("d-none");
-        resizeCanvas();
     }else{
         canvasElement.style.transform ="";
         containerElement = $("#image-container");
