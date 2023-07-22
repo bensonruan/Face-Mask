@@ -4,7 +4,7 @@ Image and Real time webcam face detection, protect yourself from COVID19 with a 
 Utilize tensorflowjs facemesh model.
 
 ## Live Demo
-**[https://bensonruan.com/face-mask-for-trump-with-face-landmark-detection](https://bensonruan.com/face-mask-for-trump-with-face-landmark-detection)**
+**[https://bensonruan.com/face-detection-javascript-real-time-mask-application/](https://bensonruan.com/face-detection-javascript-real-time-mask-application/)**
 
 ![mask-for-Trump](https://bensonruan.com/wp-content/uploads/2020/05/Mask_for_Trump.gif)
 
@@ -25,7 +25,7 @@ The facemesh detected keypoints that used for overlay the mask:
 * Chin : 152
 * Right Cheek : 454
 
-![face-landmarks](https://bensonruan.com/wp-content/uploads/2020/05/mesh_map_key_points.jpg)
+![face-landmarks](https://bensonruan.com/wp-content/webp-express/webp-images/uploads/2020/05/mesh_map_key_points-1024x931.jpg.webp)
 
 ## Put Mask On
 * Click on 'Put Mask On' button to detect face on image and cover by mask
@@ -33,7 +33,7 @@ The facemesh detected keypoints that used for overlay the mask:
 * Wait for a few seconds to Load Model for face landmark detection
 * Choose the face mask you would like to try on, watch yourself cover up 
 
-![facemesh-mask-demo](https://bensonruan.com/wp-content/uploads/2020/05/facemesh_mask_webcam_demo_short.gif)
+![facemesh-mask-demo](https://bensonruan.com/wp-content/webp-express/webp-images/uploads/2020/05/facemesh_mask_webcam_demo.webp)
 
 ## Notes
 * Please note that on iOS Safari, cameras can only be accessed via the https protocol 
@@ -42,4 +42,7 @@ The facemesh detected keypoints that used for overlay the mask:
 ## Library
 * [jquery](https://code.jquery.com/jquery-3.3.1.min.js) - JQuery
 * [webcam-easy.js](https://github.com/bensonruan/webcam-easy) - javascript library for accessing webcam stream and taking photos
-* [facemesh](https://github.com/tensorflow/tfjs-models/tree/master/facemesh) - MediaPipe Facemesh is a lightweight machine learning pipeline predicting 486 3D facial landmarks to infer the approximate surface geometry of a human face 
+* [facemesh](https://github.com/tensorflow/tfjs-models/tree/master/facemesh) - MediaPipe Facemesh is a lightweight machine learning pipeline predicting 486 3D facial landmarks to infer the approximate surface geometry of a human face
+
+## Support me 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W6METMY)
